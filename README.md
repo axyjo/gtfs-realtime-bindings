@@ -1,46 +1,47 @@
-# gtfs-realtime-bindings
+# Python GTFS-realtime Language Bindings
 
-Language bindings generated from the
-[GTFS-realtime](https://developers.google.com/transit/gtfs-realtime/) protocol
-buffer spec for popular languages.
+[![PyPI version](https://badge.fury.io/py/gtfs-realtime-bindings.svg)](http://badge.fury.io/py/gtfs-realtime-bindings)
 
-## Introduction
+Provides Python classes generated from the
+[GTFS-realtime](https://developers.google.com/transit/gtfs-realtime/) Protocol
+Buffer specification.  These classes will allow you to parse a binary Protocol
+Buffer GTFS-realtime data feed into Python objects.
 
-[GTFS-realtime](https://developers.google.com/transit/gtfs-realtime/) is a data
-format for communicating real-time information about public transit systems.
-GTFS-realtime data is encoded and decoded using [Protocol
-Buffers](https://developers.google.com/protocol-buffers/), a compact binary
-representation designed for fast and efficient processing.  The data schema
-itself is defined in
-[gtfs-realtime.proto](https://developers.google.com/transit/gtfs-realtime/gtfs-realtime-proto).
+## Add the Dependency
 
-To work with GTFS-realtime data, a developer would typically use the
-`gtfs-realtime.proto` schema to generate classes in the programming language of
-their choice.  These classes can then be used for constructing GTFS-realtime
-data model objects and serializing them as binary data or, in the reverse
-direction, parsing binary data into data model objects.
+To use the `gtfs-realtime-bindings` classes in your own project, you need to
+first install the module from the
+[PyPI repository](https://pypi.python.org/pypi/gtfs-realtime-bindings).
 
-Because generating GTFS-realtime data model classes from the
-`gtfs-realtime.proto` schema is such a common task, but also one that sometimes
-causes confusion for first-time developers, this project aims to provide
-pre-generated GTFS-realtime language bindings for a number of the most popular
-programming languages.  Where possible, these language bindings will be
-published as packages to facilitate their use in other projects.
+```
+# Using easy_install
+easy_install --upgrade gtfs-realtime-bindings
 
-## Supported Languages
+# Using pip
+pip install --upgrade gtfs-realtime-bindings
+```
 
-* [.NET](dotnet/README.md)
-* [Java](java/README.md)
-* [JavaScript / Node.js](nodejs/README.md)
-* [PHP](https://github.com/google/gtfs-realtime-bindings-php)
-* [Python](python/README.md)
-* [Ruby](ruby/README.md)
+## Example Code
 
-## Other Languages
+The following code snippet demonstrates downloading a GTFS-realtime data feed
+from a particular URL, parsing it as a FeedMessage (the root type of the
+GTFS-realtime schema), and iterating over the results.
 
-We don't provide generated code for C++, use the official protoc compiler for that (from [here](https://developers.google.com/protocol-buffers/docs/downloads) or [here](https://github.com/google/protobuf))
+```python
+from google.transit import gtfs_realtime_pb2
+import requests
 
-Are we missing your favorite language? Consider contributing:
+feed = gtfs_realtime_pb2.FeedMessage()
+response = requests.get('URL OF YOUR GTFS-REALTIME SOURCE GOES HERE')
+feed.ParseFromString(response.content)
+for entity in feed.entity:
+  if entity.HasField('trip_update'):
+    print entity.trip_update
+```
 
-1. Read [CONTRIBUTING.md](CONTRIBUTING.md).
-2. Open a pull request with your language of choice. Please include update instructions (ideally, scripts). Also, provide packaging suitable for the language ecosystem.
+For more details on the naming conventions for the Python classes generated
+from the
+[gtfs-realtime.proto](https://developers.google.com/transit/gtfs-realtime/gtfs-realtime-proto),
+check out the
+[Python Generated Code](https://developers.google.com/protocol-buffers/docs/reference/python-generated)
+section of the Protocol Buffers developer site.
